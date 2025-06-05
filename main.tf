@@ -14,6 +14,7 @@ provider "google-beta" {
 }
 
 resource "google_service_account" "cloud_run_sa" {
+  project      = var.project
   account_id   = "cloud-run-service-account"
   display_name = "A service account allowed to deploy images on Cloud Run"
 }
@@ -37,10 +38,10 @@ variable "project" {
 
 variable "region" {
   description = "Region name"
-  default = "us-central1"
+  default     = "us-central1"
 }
 
 variable "zone" {
   description = "Zone name"
-  default = "us-central1-a"
+  default     = "us-central1-a"
 }
