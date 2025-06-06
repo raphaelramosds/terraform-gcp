@@ -13,6 +13,9 @@ provider "google-beta" {
   zone    = var.zone
 }
 
+
+# Create Service account with roles: Cloud Run Admin and Service Account User
+
 resource "google_service_account" "cloud_run_sa" {
   project      = var.project
   account_id   = "cloud-run-service-account"
@@ -31,17 +34,44 @@ resource "google_project_iam_member" "service_account_user" {
   member  = "serviceAccount:${google_service_account.cloud_run_sa.email}"
 }
 
-variable "project" {
-  description = "Project name"
-  default     = "sample-project-460722"
+
+resource "google_service_account_key" "cloud_run_sa_key" {
+  service_account_id = google_service_account.cloud_run_sa.name
+  public_key_type    = "TYPE_X509_PEM_FILE"
 }
 
-variable "region" {
-  description = "Region name"
-  default     = "us-central1"
+# Create service account with role: Log Writer, Artifact Registry Writer and Service Account User
+
+resource "google_service_account" "cloud_build_sa" {
+  project = var.project
+  account_id = "cloud-build-service-account"
+  display_name = "A service account allowed to create triggers on Cloud Build"
 }
 
-variable "zone" {
-  description = "Zone name"
-  default     = "us-central1-a"
+resource "google_project_iam_member" "act_as" {
+  project = var.project
+  role    = "roles/iam.serviceAccountUser"
+  member  = "serviceAccount:${google_service_account.cloud_build_sa.email}"
+}
+
+resource "google_project_iam_member" "logs_writer" {
+  project = var.project
+  role    = "roles/logging.logWriter"
+  member  = "serviceAccount:${google_service_account.cloud_build_sa.email}"
+}
+
+resource "google_project_iam_member" "artifact_registry_writer" {
+  project = var.project
+  role    = "roles/artifactregistry.writer"
+  member  = "serviceAccount:${google_service_account.cloud_build_sa.email}"
+}
+
+# Create Artifact Registry for this project
+
+resource "google_artifact_registry_repository" "sample_project_repository" {
+    project = var.project
+  location      = var.region
+  repository_id = "sample-project-repository"
+  description   = "Docker repository for Sample Project"
+  format        = "DOCKER"
 }
