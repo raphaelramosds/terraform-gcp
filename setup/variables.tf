@@ -1,14 +1,17 @@
-variable "project" {
+variable "project_id" {
   description = "Project name"
-  default     = "sample-project-460722"
+  type = string
+  default     = ""
 }
 
 variable "region" {
   description = "Region name"
-  default     = "us-central1"
+  type = string
+  default     = ""
 }
 
 variable "zone" {
   description = "Zone name"
-  default     = "us-central1-a"
+  type = string
+  default     = ""
 }
