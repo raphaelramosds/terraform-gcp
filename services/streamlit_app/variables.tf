@@ -22,6 +22,12 @@ variable "service_account_id" {
   default     = ""
 }
 
+variable "service_account_email" {
+  description = "Email of the service account used by Cloud Build and Cloud Run"
+  type        = string
+  default     = ""
+}
+
 variable "zone" {
   description = "Google Cloud zone (e.g., us-central1-a)"
   type        = string

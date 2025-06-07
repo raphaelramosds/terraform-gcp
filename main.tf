@@ -23,11 +23,12 @@ module "setup" {
 
 # Services
 module "streamlit_app" {
-  source             = "./services/streamlit_app"
-  project_id         = var.project_id
-  region             = var.region
-  service_account_id = module.setup.service_account_id
-  registry_repo_name = module.setup.registry_repo_name
+  source                = "./services/streamlit_app"
+  project_id            = var.project_id
+  region                = var.region
+  service_account_email = module.setup.service_account_email
+  service_account_id    = module.setup.service_account_id
+  registry_repo_name    = module.setup.registry_repo_name
 }
 
 # Variables

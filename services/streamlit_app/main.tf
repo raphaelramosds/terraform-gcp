@@ -24,11 +24,11 @@ resource "google_cloudbuild_trigger" "cloudbuild_trigger" {
   service_account = var.service_account_id
   filename        = var.cloudbuild_path
   substitutions = {
-    _CI_SERVICE_NAME       = var.service_name
-    _CI_IMAGE              = "${var.region}-docker.pkg.dev/${var.project_id}/${var.registry_repo_name}/${var.service_name}"
-    _CI_PROJECT_ID         = var.project_id
-    _CI_REGION             = var.region
-    _CI_SERVICE_ACCOUNT_ID = var.service_account_id
+    _CI_SERVICE_NAME           = var.service_name
+    _CI_IMAGE                  = "${var.region}-docker.pkg.dev/${var.project_id}/${var.registry_repo_name}/${var.service_name}"
+    _CI_PROJECT_ID             = var.project_id
+    _CI_REGION                 = var.region
+    _CI_SERVICE_ACCOUNT_EMAIL = var.service_account_email
   }
   github {
     owner = "raphaelramosds"
