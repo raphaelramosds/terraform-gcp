@@ -30,8 +30,7 @@ module "streamlit_app" {
   registry_repo_name = module.setup.registry_repo_name
 }
 
-# Variables explanation
-
+# Variables
 variable "project_id" {
   description = "Project name"
   type        = string
