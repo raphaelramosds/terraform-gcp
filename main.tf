@@ -14,37 +14,38 @@ provider "google-beta" {
 }
 
 # Setup common resources for all services
-
 module "setup" {
-  source = "./setup"
+  source     = "./setup"
   project_id = var.project_id
-  region = var.region
-  zone = var.zone
+  region     = var.region
+  zone       = var.zone
 }
 
 # Services
-
-# module "streamlit_app" {
-#   source = "./services/streamlit_app"
-#   depends_on = [ module.setup ]
-# }
+module "streamlit_app" {
+  source             = "./services/streamlit_app"
+  project_id         = var.project_id
+  region             = var.region
+  service_account_id = module.setup.service_account_id
+  registry_repo_name = module.setup.registry_repo_name
+}
 
 # Variables explanation
 
 variable "project_id" {
   description = "Project name"
-  type = string
+  type        = string
   default     = ""
 }
 
 variable "region" {
   description = "Region name"
-  type = string
+  type        = string
   default     = ""
 }
 
 variable "zone" {
   description = "Zone name"
-  type = string
+  type        = string
   default     = ""
 }

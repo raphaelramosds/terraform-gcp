@@ -4,67 +4,40 @@ provider "google-beta" {
   zone    = var.zone
 }
 
-# Bind IAM policy to "public_invoker" for allowing anyone on internet access a Cloud Run service
-data "google_iam_policy" "public_invoker" {
-  binding {
-    role    = "roles/run.invoker"
-    members = ["allUsers"]
-  }
-}
+# Cloud Build Trigger: streamlit_app
+#
+# Automatically builds and deploys the Docker image to Cloud Run 
+# whenever there is a new push to the `main` branch of the specified GitHub repository.
+#
+# The build configuration is defined in the `streamlit/cloudbuild.yaml` file.
+# Substitutions provide contextual variables to be used within the build process.
+#
+# Important:
+# - The GitHub repository must be connected manually via the GCP Console:
+#   Cloud Build → Triggers → Connect Repository
+# - Manual approval is required before each build is executed.
 
-# Sets an IAM policy on the Cloud Run service to allow external users (unauthenticated) to access it
-resource "google_cloud_run_service_iam_policy" "public-access" {
-  project     = var.project_id
-  service     = google_cloud_run_service.streamlit-app.name
-  location    = google_cloud_run_service.streamlit-app.location
-  policy_data = data.google_iam_policy.public_invoker.policy_data
-}
-
-# Set a Cloud Build trigger to build the Dockerfile of a Github project when there is a new push on the branch main
-resource "google_cloudbuild_trigger" "streamlit-app-build" {
-  name            = "streamlit-app-build"
+resource "google_cloudbuild_trigger" "cloudbuild_trigger" {
+  name            = "${var.service_name}-ci-trigger"
   project         = var.project_id
   location        = var.region
-  service_account = "projects/${var.project_id}/serviceAccounts/cloud-build-service-account@sample-project-460722.iam.gserviceaccount.com"
-  filename        = "streamlit/cloudbuild.yaml"
-
+  service_account = var.service_account_id
+  filename        = var.cloudbuild_path
+  substitutions = {
+    _CI_SERVICE_NAME       = var.service_name
+    _CI_IMAGE              = "${var.region}-docker.pkg.dev/${var.project_id}/${var.registry_repo_name}/${var.service_name}"
+    _CI_PROJECT_ID         = var.project_id
+    _CI_REGION             = var.region
+    _CI_SERVICE_ACCOUNT_ID = var.service_account_id
+  }
   github {
     owner = "raphaelramosds"
-    name  = "dca3501-project" # NOTE: one MUST connect this repo on GCP console at Cloud Build / Triggers / Connect repository
+    name  = "dca3501-project"
     push {
       branch = "main"
     }
   }
-
-  # Manually approve/reject this trigger on console
   approval_config {
     approval_required = true
   }
-
-  depends_on = [google_project_service.enable_services]
-}
-
-# Deploys a containerized Streamlit app to Cloud Run using an image stored in Artifact Registry
-resource "google_cloud_run_service" "streamlit-app" {
-  project  = var.project_id
-  name     = "streamlit-app"
-  location = var.region
-
-  template {
-    spec {
-      containers {
-        image = "us-central1-docker.pkg.dev/sample-project-460722/sample-project-repository/streamlit-app"
-        ports {
-          container_port = 8501
-        }
-      }
-    }
-  }
-
-  traffic {
-    percent         = 100
-    latest_revision = true
-  }
-
-  depends_on = [google_project_service.enable_services]
 }
