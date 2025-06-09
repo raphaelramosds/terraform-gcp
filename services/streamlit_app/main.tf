@@ -15,7 +15,7 @@ provider "google-beta" {
 # Important:
 # - The GitHub repository must be connected manually via the GCP Console:
 #   Cloud Build → Triggers → Connect Repository
-# - Manual approval is required before each build is executed.
+# - Manual approval is not required before each build is executed.
 
 resource "google_cloudbuild_trigger" "cloudbuild_trigger" {
   name            = "${var.service_name}-ci-trigger"
@@ -38,6 +38,6 @@ resource "google_cloudbuild_trigger" "cloudbuild_trigger" {
     }
   }
   approval_config {
-    approval_required = true
+    approval_required = false
   }
 }

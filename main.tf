@@ -13,7 +13,7 @@ provider "google-beta" {
   zone    = var.zone
 }
 
-# Setup common resources for all services
+# Setup common resources
 module "setup" {
   source     = "./setup"
   project_id = var.project_id
