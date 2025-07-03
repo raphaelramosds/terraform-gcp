@@ -35,6 +35,13 @@ module "streamlit_app" {
   registry_repo_name    = module.setup.registry_repo_name
 }
 
+module "gwlito_bucket" {
+  source = "./services/gwlito_bucket"
+  project_id            = var.project_id
+  region                = var.region
+  zone                  = var.zone
+}
+
 # Variables
 variable "project_id" {
   description = "Project name"

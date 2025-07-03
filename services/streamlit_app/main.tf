@@ -4,7 +4,7 @@ provider "google-beta" {
   zone    = var.zone
 }
 
-# Cloud Build Trigger: streamlit_app
+# Cloud Build Trigger
 #
 # Automatically builds and deploys the Docker image to Cloud Run 
 # whenever there is a new push to the `main` branch of the specified GitHub repository.
