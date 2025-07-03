@@ -5,6 +5,10 @@ terraform {
       version = "4.39.0"
     }
   }
+  backend "gcs" {
+    bucket = "storage-terraform-gcp"
+    prefix = "terraform/state"
+  }
 }
 
 provider "google-beta" {
