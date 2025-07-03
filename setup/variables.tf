@@ -5,13 +5,13 @@ variable "project_id" {
 }
 
 variable "region" {
-  description = "Region name"
+  description = "Google Cloud region to deploy the resources (e.g., us-central1)"
   type        = string
-  default     = "us-central1"
+  default     = ""
 }
 
 variable "zone" {
-  description = "Zone name"
+  description = "Google Cloud zone (e.g., us-central1-a)"
   type        = string
-  default     = "us-central1-a"
+  default     = ""
 }
