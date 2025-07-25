@@ -45,6 +45,7 @@ resource "google_secret_manager_secret" "service_db_secret" {
 resource "google_secret_manager_secret_version" "secret_version_basic" {
   secret      = google_secret_manager_secret.service_db_secret.id
   secret_data = var.services_db_secret_data
+  deletion_policy = "DISABLED"
 }
 
 resource "google_sql_database_instance" "main" {
@@ -53,6 +54,7 @@ resource "google_sql_database_instance" "main" {
   region           = var.region
   root_password    = data.google_secret_manager_secret_version_access.basic.secret_data
   project          = var.project_id
+  deletion_protection = false
 
   settings {
     tier = "db-f1-micro"
