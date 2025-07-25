@@ -36,10 +36,17 @@ module "streamlit_app" {
 }
 
 module "gwlito_bucket" {
-  source = "./services/gwlito_bucket"
-  project_id            = var.project_id
-  region                = var.region
-  zone                  = var.zone
+  source     = "./services/gwlito_bucket"
+  project_id = var.project_id
+  region     = var.region
+  zone       = var.zone
+}
+
+module "services_db" {
+  source     = "./services/services_db"
+  project_id = var.project_id
+  region     = var.region
+  zone       = var.zone
 }
 
 # Variables
@@ -59,4 +66,14 @@ variable "zone" {
   description = "Zone name"
   type        = string
   default     = ""
+}
+
+variable "service_db_secret_data" {
+  default = "Service DB secret data"
+  type    = string
+}
+
+output "service_account_key" {
+  value     = module.setup.service_account_key
+  sensitive = true
 }

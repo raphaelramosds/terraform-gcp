@@ -1,3 +1,4 @@
 project_id = ""
 region = ""
 zone = ""
+service_db_secret_data = ""

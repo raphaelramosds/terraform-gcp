@@ -15,3 +15,7 @@ This setup includes:
 ✅ Automated container build and deployment using Cloud Build and Cloud Run
 
 ✅ Google Cloud Storage bucket provisioning
+
+✅ Google Cloud SQL instance provisioning
+
+✅ Secrets management
