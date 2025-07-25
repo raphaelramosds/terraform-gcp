@@ -42,7 +42,6 @@ resource "google_secret_manager_secret" "service_db_secret" {
   }
 }
 
-# Create first version for the secret above
 resource "google_secret_manager_secret_version" "secret_version_basic" {
   secret      = google_secret_manager_secret.service_db_secret.id
   secret_data = var.services_db_secret_data
