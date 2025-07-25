@@ -23,6 +23,6 @@ variable "instance" {
 }
 
 variable "services_db_secret_data" {
-  default = "Services DB secret data"
-  type    = string
+  description = "Services DB secret data"
+  type        = string
 }

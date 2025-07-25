@@ -1,4 +1,4 @@
-project_id = ""
-region = ""
-zone = ""
+project_id             = "general-project-464820"
+region                 = "us-central1"
+zone                   = "us-central1-a"
 service_db_secret_data = ""

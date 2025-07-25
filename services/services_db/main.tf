@@ -22,7 +22,7 @@ data "google_sql_database_instance" "main_instance" {
 }
 
 data "google_secret_manager_secret_version_access" "basic" {
-  secret = google_secret_manager_secret.service_db_secret.secret_id
+  secret  = google_secret_manager_secret.service_db_secret.secret_id
   project = var.project_id
 }
 

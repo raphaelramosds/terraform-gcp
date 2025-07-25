@@ -43,10 +43,11 @@ module "gwlito_bucket" {
 }
 
 module "services_db" {
-  source     = "./services/services_db"
-  project_id = var.project_id
-  region     = var.region
-  zone       = var.zone
+  source                  = "./services/services_db"
+  project_id              = var.project_id
+  region                  = var.region
+  zone                    = var.zone
+  services_db_secret_data = var.service_db_secret_data
 }
 
 # Variables
@@ -69,8 +70,8 @@ variable "zone" {
 }
 
 variable "service_db_secret_data" {
-  default = "Service DB secret data"
-  type    = string
+  description = "Services DB secret data"
+  type        = string
 }
 
 output "service_account_key" {
