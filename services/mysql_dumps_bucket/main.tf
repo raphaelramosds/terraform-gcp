@@ -4,8 +4,8 @@ provider "google-beta" {
   zone    = var.zone
 }
 
-resource "google_storage_bucket" "gwlito_bucket" {
-  name          = "gwlito-bucket"
+resource "google_storage_bucket" "mysql_dumps_bucket" {
+  name          = "mysql-dumps-bucket"
   location      = "US"
   force_destroy = true
   project       = var.project_id

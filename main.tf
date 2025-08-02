@@ -26,29 +26,36 @@ module "setup" {
 }
 
 # Services
-module "streamlit_app" {
-  source                = "./services/streamlit_app"
-  project_id            = var.project_id
-  region                = var.region
-  service_account_email = module.setup.service_account_email
-  service_account_id    = module.setup.service_account_id
-  registry_repo_name    = module.setup.registry_repo_name
-}
+# module "streamlit_app" {
+#   source                = "./services/streamlit_app"
+#   project_id            = var.project_id
+#   region                = var.region
+#   service_account_email = module.setup.service_account_email
+#   service_account_id    = module.setup.service_account_id
+#   registry_repo_name    = module.setup.registry_repo_name
+# }
 
-module "gwlito_bucket" {
-  source     = "./services/gwlito_bucket"
+# module "gwlito_bucket" {
+#   source     = "./services/gwlito_bucket"
+#   project_id = var.project_id
+#   region     = var.region
+#   zone       = var.zone
+# }
+
+module "mysql_dumps_bucket" {
+  source     = "./services/mysql_dumps_bucket"
   project_id = var.project_id
   region     = var.region
   zone       = var.zone
 }
 
-module "services_db" {
-  source                  = "./services/services_db"
-  project_id              = var.project_id
-  region                  = var.region
-  zone                    = var.zone
-  services_db_secret_data = var.service_db_secret_data
-}
+# module "services_db" {
+#   source                  = "./services/services_db"
+#   project_id              = var.project_id
+#   region                  = var.region
+#   zone                    = var.zone
+#   services_db_secret_data = var.service_db_secret_data
+# }
 
 # Variables
 variable "project_id" {
