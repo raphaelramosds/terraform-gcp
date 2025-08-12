@@ -4,8 +4,8 @@ provider "google-beta" {
   zone    = var.zone
 }
 
-resource "google_storage_bucket" "mysql_dumps_bucket" {
-  name          = "storage-mysql-dumps-bucket"
+resource "google_storage_bucket" "my_personal_bucket" {
+  name          = "storage-my-personal-bucket"
   location      = "US"
   force_destroy = false
   project       = var.project_id

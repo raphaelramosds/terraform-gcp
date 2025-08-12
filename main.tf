@@ -49,6 +49,14 @@ module "mysql_dumps_bucket" {
   zone       = var.zone
 }
 
+
+module "my_personal_bucket" {
+  source     = "./services/my_personal_bucket"
+  project_id = var.project_id
+  region     = var.region
+  zone       = var.zone
+}
+
 # module "services_db" {
 #   source                  = "./services/services_db"
 #   project_id              = var.project_id
