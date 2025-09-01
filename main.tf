@@ -65,6 +65,14 @@ module "my_personal_bucket" {
 #   services_db_secret_data = var.service_db_secret_data
 # }
 
+module "apis_monorepo_triggers" {
+  source                = "./services/apis_monorepo_triggers"
+  project_id            = var.project_id
+  region                = var.region
+  zone                  = var.zone
+  service_account_email = module.setup.service_account_email
+}
+
 # Variables
 variable "project_id" {
   description = "Project name"

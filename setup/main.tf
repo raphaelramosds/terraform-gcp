@@ -12,6 +12,7 @@ resource "google_project_service" "enable_services" {
     "cloudbuild.googleapis.com",
     "artifactregistry.googleapis.com",
     "secretmanager.googleapis.com",
+    "developerconnect.googleapis.com"
   ])
   service = each.key
 }
@@ -37,7 +38,8 @@ resource "google_project_iam_member" "permissions" {
     "roles/logging.logWriter",
     "roles/cloudsql.client",
     "roles/secretmanager.admin",
-    "roles/secretmanager.secretAccessor"
+    "roles/secretmanager.secretAccessor",
+
   ])
   depends_on = [
     google_project_service.enable_services,
