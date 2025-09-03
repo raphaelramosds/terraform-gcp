@@ -71,6 +71,7 @@ module "apis_monorepo_triggers" {
   region                = var.region
   zone                  = var.zone
   service_account_email = module.setup.service_account_email
+  registry_repo_name    = module.setup.registry_repo_name
 }
 
 # Variables

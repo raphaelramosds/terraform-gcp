@@ -4,110 +4,58 @@ provider "google-beta" {
   zone    = var.zone
 }
 
-resource "google_cloudbuild_trigger" "phpapi_trigger_dev" {
-  name = "phpapi-dev"
-  project  = var.project_id
-  location = "us-central1"
-  service_account = "projects/${var.project_id}/serviceAccounts/${var.service_account_email}"
-
-  included_files = [
-    "projects/php_api/**"
-  ]
-
-  repository_event_config {
-    repository = "projects/general-project-464820/locations/us-central1/connections/geowellex/repositories/raphaelgeowellex-apis-monorepo"
-    push {
-      branch = "dev"
+locals {
+  triggers = {
+    phpapi-dev = {
+      service_name  = "phpapi"
+      branch        = "dev"
+      included_path = ["projects/php_api/**"]
+      filename      = "projects/php_api/cloudbuild.yaml"
+    }
+    phpapi-staging = {
+      service_name  = "phpapi"
+      branch        = "staging"
+      included_path = ["projects/php_api/**"]
+      filename      = "projects/php_api/cloudbuild.yaml"
+    }
+    pythonapi-dev = {
+      service_name  = "pythonapi"
+      branch        = "dev"
+      included_path = ["projects/python_api/**"]
+      filename      = "projects/python_api/cloudbuild.yaml"
+    }
+    pythonapi-staging = {
+      service_name  = "pythonapi"
+      branch        = "staging"
+      included_path = ["projects/python_api/**"]
+      filename      = "projects/python_api/cloudbuild.yaml"
     }
   }
-
-  substitutions = {
-    _CI_IMAGE                 = "phpapi"
-    _CI_SERVICE_NAME          = "phpapi"
-    _CI_REGION                = var.region
-    _CI_SERVICE_ACCOUNT_EMAIL = var.service_account_email
-  }
-
-  filename = "projects/php_api/cloudbuild.yaml"
 }
 
-resource "google_cloudbuild_trigger" "phpapi_trigger_staging" {
-  name = "phpapi-staging"
-  project  = var.project_id
-  location = "us-central1"
+resource "google_cloudbuild_trigger" "api_triggers" {
+  for_each = local.triggers
+
+  name            = each.key
+  project         = var.project_id
+  location        = var.region
   service_account = "projects/${var.project_id}/serviceAccounts/${var.service_account_email}"
 
-  included_files = [
-    "projects/php_api/**"
-  ]
+  included_files = each.value.included_path
 
   repository_event_config {
-    repository = "projects/general-project-464820/locations/us-central1/connections/geowellex/repositories/raphaelgeowellex-apis-monorepo"
+    repository = "projects/${var.project_id}/locations/${var.region}/connections/geowellex/repositories/raphaelgeowellex-apis-monorepo"
     push {
-      branch = "staging"
+      branch = each.value.branch
     }
   }
 
   substitutions = {
-    _CI_IMAGE                 = "phpapi"
-    _CI_SERVICE_NAME          = "phpapi"
+    _CI_REPO                  = var.registry_repo_name
+    _CI_SERVICE_NAME          = each.value.service_name
     _CI_REGION                = var.region
     _CI_SERVICE_ACCOUNT_EMAIL = var.service_account_email
   }
 
-  filename = "projects/php_api/cloudbuild.yaml"
-}
-
-resource "google_cloudbuild_trigger" "pythonapi_trigger_dev" {
-  name = "pythonapi-dev"
-  project  = var.project_id
-  location = "us-central1"
-  service_account = "projects/${var.project_id}/serviceAccounts/${var.service_account_email}"
-
-  included_files = [
-    "projects/python_api/**"
-  ]
-
-  repository_event_config {
-    repository = "projects/general-project-464820/locations/us-central1/connections/geowellex/repositories/raphaelgeowellex-apis-monorepo"
-    push {
-      branch = "dev"
-    }
-  }
-
-  substitutions = {
-    _CI_IMAGE                 = "pythonapi"
-    _CI_SERVICE_NAME          = "pythonapi"
-    _CI_REGION                = var.region
-    _CI_SERVICE_ACCOUNT_EMAIL = var.service_account_email
-  }
-
-  filename = "projects/python_api/cloudbuild.yaml"
-}
-
-resource "google_cloudbuild_trigger" "pythonapi_trigger_staging" {
-  name = "pythonapi-staging"
-  project  = var.project_id
-  location = "us-central1"
-  service_account = "projects/${var.project_id}/serviceAccounts/${var.service_account_email}"
-
-  included_files = [
-    "projects/python_api/**"
-  ]
-
-  repository_event_config {
-    repository = "projects/general-project-464820/locations/us-central1/connections/geowellex/repositories/raphaelgeowellex-apis-monorepo"
-    push {
-      branch = "staging"
-    }
-  }
-
-  substitutions = {
-    _CI_IMAGE                 = "pythonapi"
-    _CI_SERVICE_NAME          = "pythonapi"
-    _CI_REGION                = var.region
-    _CI_SERVICE_ACCOUNT_EMAIL = var.service_account_email
-  }
-
-  filename = "projects/python_api/cloudbuild.yaml"
+  filename = each.value.filename
 }

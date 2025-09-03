@@ -21,3 +21,8 @@ variable "zone" {
   type        = string
   default     = ""
 }
+
+variable "registry_repo_name" {
+  description = "Repository name on Artifact Registry"
+  type = string
+}
