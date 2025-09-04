@@ -10,6 +10,7 @@ resource "google_cloudbuildv2_connection" "connection" {
   project  = var.project_id
   gitlab_config {
     host_uri                      = "gitlab.com"
+    # SecretManager resource containing the webhook secret of a GitLab Enterprise project, formatted as 'projects//secrets//versions/*'
     webhook_secret_secret_version = ""
     read_authorizer_credential {
       # A SecretManager resource containing the user token that authorizes the Cloud Build connection. Format: 'projects/*/secrets/*/versions/*'.
@@ -29,7 +30,6 @@ resource "google_cloudbuild_trigger" "api_triggers" {
   project         = var.project_id
   location        = var.region
   service_account = "projects/${var.project_id}/serviceAccounts/${var.service_account_email}"
-
   included_files = each.value.included_path
 
   repository_event_config {
@@ -38,12 +38,7 @@ resource "google_cloudbuild_trigger" "api_triggers" {
       branch = each.value.branch
     }
   }
-
-  substitutions = merge(
-    local.substitutions,
-    each.value.substitutions,
-    { _CI_SERVICE_NAME = each.value.service_name }
-  )
-
+  
+  substitutions = merge(local.substitutions, each.value.substitutions)
   filename = each.value.filename
 }
