@@ -4,31 +4,20 @@ provider "google-beta" {
   zone    = var.zone
 }
 
-locals {
-  triggers = {
-    phpapi-dev = {
-      service_name  = "phpapi"
-      branch        = "dev"
-      included_path = ["projects/php_api/**"]
-      filename      = "projects/php_api/cloudbuild.yaml"
+resource "google_cloudbuildv2_connection" "connection" {
+  name     = "geowellex-gitlab"
+  location = var.region
+  project  = var.project_id
+  gitlab_config {
+    host_uri                      = "gitlab.com"
+    webhook_secret_secret_version = ""
+    read_authorizer_credential {
+      # A SecretManager resource containing the user token that authorizes the Cloud Build connection. Format: 'projects/*/secrets/*/versions/*'.
+      user_token_secret_version = ""
     }
-    phpapi-staging = {
-      service_name  = "phpapi"
-      branch        = "staging"
-      included_path = ["projects/php_api/**"]
-      filename      = "projects/php_api/cloudbuild.yaml"
-    }
-    pythonapi-dev = {
-      service_name  = "pythonapi"
-      branch        = "dev"
-      included_path = ["projects/python_api/**"]
-      filename      = "projects/python_api/cloudbuild.yaml"
-    }
-    pythonapi-staging = {
-      service_name  = "pythonapi"
-      branch        = "staging"
-      included_path = ["projects/python_api/**"]
-      filename      = "projects/python_api/cloudbuild.yaml"
+    authorizer_credential {
+      # A GitLab personal access token with the 'api' scope access
+      user_token_secret_version = ""
     }
   }
 }
@@ -50,12 +39,11 @@ resource "google_cloudbuild_trigger" "api_triggers" {
     }
   }
 
-  substitutions = {
-    _CI_REPO                  = var.registry_repo_name
-    _CI_SERVICE_NAME          = each.value.service_name
-    _CI_REGION                = var.region
-    _CI_SERVICE_ACCOUNT_EMAIL = var.service_account_email
-  }
+  substitutions = merge(
+    local.substitutions,
+    each.value.substitutions,
+    { _CI_SERVICE_NAME = each.value.service_name }
+  )
 
   filename = each.value.filename
 }
