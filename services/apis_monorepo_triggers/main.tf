@@ -10,17 +10,29 @@ resource "google_cloudbuildv2_connection" "connection" {
   project  = var.project_id
   gitlab_config {
     host_uri = "gitlab.com"
-    # SecretManager resource containing the webhook secret of a GitLab Enterprise project, formatted as 'projects//secrets//versions/*'
-    # (created on Gitlab > Settings > Access Tokens)
+
+    # SecretManager resource containing the webhook secret of a GitLab Enterprise project with the following event triggers: 
+    # "Merge request events", "Comments", "Push events", "Tag push events", "SSL Verification: enabled".
+    # Create it on on Gitlab > Projects > Settings > Webhooks
+    #
+    # NOTE: Each project MUST have its own webhook! So you MUST create a connection resource to each Gitlab project
+    #
+    # Format: 'projects/*/secrets/*/versions/*'.
     webhook_secret_secret_version = ""
+
     read_authorizer_credential {
-      # A SecretManager resource containing the user token that authorizes the Cloud Build connection. Format: 'projects/*/secrets/*/versions/*'.
-      # (created on Gitlab > Settings > Access Tokens)
+      # A SecretManager resource containing the user token that authorizes the Cloud Build connection.
+      # Create it on on itlab > Settings > Access Tokens
+      #
+      # Format: 'projects/*/secrets/*/versions/*'.
       user_token_secret_version = ""
     }
+
     authorizer_credential {
       # A GitLab personal access token with the 'api' scope access
-      # (created on Gitlab > Settings > Webhooks)
+      # Create it on on itlab > Settings > Access Tokens
+      #
+      # Format: 'projects/*/secrets/*/versions/*'.
       user_token_secret_version = ""
     }
   }
