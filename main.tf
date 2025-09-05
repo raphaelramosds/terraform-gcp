@@ -72,6 +72,8 @@ module "apis_monorepo_triggers" {
   zone                  = var.zone
   service_account_email = module.setup.service_account_email
   registry_repo_name    = module.setup.registry_repo_name
+  webhook_token         = var.webhook_token
+  gitlab_pat            = var.gitlab_pat
 }
 
 # Variables
@@ -101,4 +103,20 @@ variable "service_db_secret_data" {
 output "service_account_key" {
   value     = module.setup.service_account_key
   sensitive = true
+}
+
+variable "webhook_token" {
+  description = <<EOT
+  Webhook secret of a Gitlab Enterprise with SSL Verification enabled and the following event triggers:
+
+  "Merge request events", "Comments", "Push events", "Tag push events"
+  
+  NOTE: Each project MUST have its own webhook! So you MUST create a connection resource to each Gitlab project
+  EOT
+  type        = string
+}
+
+variable "gitlab_pat" {
+  description = "A GitLab personal access token with the 'api' scope access"
+  type        = string
 }
