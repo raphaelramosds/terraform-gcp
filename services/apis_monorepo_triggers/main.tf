@@ -25,17 +25,13 @@ resource "google_cloudbuildv2_connection" "connection" {
       user_token_secret_version = google_secret_manager_regional_secret_version.pat_secret_version.id
     }
   }
-
-  depends_on = [
-    google_secret_manager_regional_secret_iam_member.pat_secret_access,
-    google_secret_manager_regional_secret_iam_member.webhook_secret_access
-  ]
 }
 
 # Attach a repository present on the project of this connection
-resource "google_cloudbuildv2_repository" "repo" {
-  project           = var.project_id
+resource "google_cloudbuildv2_repository" "repository" {
   name              = "apis-monorepo"
+  project           = var.project_id
+  location          = var.region
   remote_uri        = "https://gitlab.com/raphaelgeowellex/apis-monorepo.git"
   parent_connection = google_cloudbuildv2_connection.connection.id
 }
@@ -51,7 +47,7 @@ resource "google_cloudbuild_trigger" "api_triggers" {
   included_files  = each.value.included_path
 
   repository_event_config {
-    repository = google_cloudbuildv2_repository.repo.id
+    repository = google_cloudbuildv2_repository.repository.id
     push {
       branch = each.value.branch
     }

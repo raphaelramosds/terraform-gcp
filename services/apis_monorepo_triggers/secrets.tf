@@ -13,13 +13,13 @@ resource "google_secret_manager_regional_secret" "pat_secret" {
 
 # Secrets versions
 resource "google_secret_manager_regional_secret_version" "webhook_secret_version" {
-  secret          = google_secret_manager_regional_secret.webhook_secret.id
+  secret          = google_secret_manager_regional_secret.webhook_secret.name
   secret_data     = var.webhook_token
   deletion_policy = "DISABLED"
 }
 
 resource "google_secret_manager_regional_secret_version" "pat_secret_version" {
-  secret          = google_secret_manager_regional_secret.pat_secret.id
+  secret          = google_secret_manager_regional_secret.pat_secret.name
   secret_data     = var.gitlab_pat
   deletion_policy = "DISABLED"
 }
